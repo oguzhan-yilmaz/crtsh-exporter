@@ -3,7 +3,7 @@
 [![build](https://github.com/DazWilkin/crtsh-exporter/actions/workflows/build.yml/badge.svg)](https://github.com/DazWilkin/crtsh-exporter/actions/workflows/build.yml)
 
 
-+ `ghcr.io/dazwilkin/crtsh-exporter:a51f90946e0c9b8dbef77e705b9271280efa958b`
++ `ghcr.io/dazwilkin/crtsh-exporter:369cf6b26d6d2026290e34696be2182b030a0115`
 
 ## Example
 
@@ -49,7 +49,7 @@ Returns
 ```bash
 cosign verify \
 --key=./cosign.pub \
-ghcr.io/dazwilkin/crtsh-exporter:a51f90946e0c9b8dbef77e705b9271280efa958b
+ghcr.io/dazwilkin/crtsh-exporter:369cf6b26d6d2026290e34696be2182b030a0115
 ```
 
 > **NOTE** `cosign.pub` may be downloaded [here](./cosign.pub)
