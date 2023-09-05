@@ -59,6 +59,7 @@ type HostsCollector struct {
 
 	// Metrics
 	CertificateRecords *prometheus.Desc
+	CertificateExpiry  *prometheus.Desc
 }
 
 // NewHostsCollector is a function that returns a new HostCollector
@@ -77,6 +78,15 @@ func NewHostsCollector(hosts []string, log *slog.Logger) *HostsCollector {
 				"name",
 				"not_before",
 				"not_after",
+				"serial_number",
+			},
+			nil,
+		),
+		CertificateExpiry: prometheus.NewDesc(
+			BuildFQName("certificate_expiry", log),
+			"Expiration (\"not after\") timestamp of most recent record",
+			[]string{
+				"name",
 				"serial_number",
 			},
 			nil,
@@ -155,10 +165,20 @@ func (c *HostsCollector) Collect(ch chan<- prometheus.Metric) {
 				record.SerialNumber,
 			}...,
 		)
+		ch <- prometheus.MustNewConstMetric(
+			c.CertificateExpiry,
+			prometheus.GaugeValue,
+			float64(record.NotAfter.Unix()),
+			[]string{
+				record.NameValue,
+				record.SerialNumber,
+			}...,
+		)
 	}
 }
 
 // Describe implements Prometheus' Collector interface and is used to describe metrics
 func (c *HostsCollector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- c.CertificateRecords
+	ch <- c.CertificateExpiry
 }

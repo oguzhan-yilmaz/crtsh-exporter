@@ -35,11 +35,46 @@ Returns
 ]
 ```
 
+## Run
+
+```bash
+HOSTS="{host1}.{domain1},{host2}.{domain2},..."
+
+HOST_PORT="8080"
+CONT_PORT="8080"
+
+podman run \
+--interactive --tty --rm \
+--name=crtsh-exporter \
+--publish=${HOST_PORT}:${CONT_PORT}/tcp \
+ghcr.io/dazwilkin/crtsh-exporter:369cf6b26d6d2026290e34696be2182b030a0115 \
+--hosts=${HOSTS} \
+--endpoint=:${CONT_PORT} \
+--path=/metrics
+```
+
+## Prometheus
+
+```bash
+VERS="v2.46.0"
+
+# Binds to host network to scrape crt.sh Exporter
+podman run \
+--interactive --tty --rm \
+--net=host \
+--volume=${PWD}/prometheus.yml:/etc/prometheus/prometheus.yml \
+--volume=${PWD}/rules.yml:/etc/alertmanager/rules.yml \
+quay.io/prometheus/prometheus:${VERS} \
+  --config.file=/etc/prometheus/prometheus.yml \
+  --web.enable-lifecycle
+```
+
 ## Metrics
 
 |Name|Type|Description|
 |----|----|-----------|
 |`crtsh_exporter_build_info`|Counter|A metric with a constant '1' value|
+|`crtsh_exporter_certificate_expiry`|Gauge|Expiration ("not after") timestamp of most recent record|
 |`crtsh_exporter_certificate_records`|Gauge|Number of Certificate records, labeled by most recent record's metadata|
 |`crtsh_exporter_start_time`|Gauge|Exporter start time in UNIX epoch|
 
