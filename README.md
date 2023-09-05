@@ -1,6 +1,6 @@
 # Prometheus Exporter for [`crt.sh`](https://crt.sh)
 
-+ `ghcr.io/dazwilkin/crtsh-exporter:1234567890123456789012345678901234567890`
++ `ghcr.io/dazwilkin/crtsh-exporter:a51f90946e0c9b8dbef77e705b9271280efa958b`
 
 ## Example
 
@@ -46,7 +46,7 @@ Returns
 ```bash
 cosign verify \
 --key=./cosign.pub \
-ghcr.io/dazwilkin/crtsh-exporter:1234567890123456789012345678901234567890
+ghcr.io/dazwilkin/crtsh-exporter:a51f90946e0c9b8dbef77e705b9271280efa958b
 ```
 
 > **NOTE** `cosign.pub` may be downloaded [here](./cosign.pub)
