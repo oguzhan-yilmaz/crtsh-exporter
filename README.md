@@ -1,5 +1,7 @@
 # Prometheus Exporter for [`crt.sh`](https://crt.sh)
 
++ `ghcr.io/dazwilkin/crtsh-exporter:1234567890123456789012345678901234567890`
+
 ## Example
 
 ```bash
