@@ -34,5 +34,23 @@ Returns
 |Name|Type|Description|
 |----|----|-----------|
 |`crtsh_exporter_build_info`|Counter|A metric with a constant '1' value|
-|`crtsh_exporter_certificate`|Gauge|Certificate count|
+|`crtsh_exporter_certificate_records`|Gauge|Number of Certificate records, labeled by most recent record's metadata|
 |`crtsh_exporter_start_time`|Gauge|Exporter start time in UNIX epoch|
+
+## [Sigstore](https://www.sigstore.dev/)
+
+`crtsh-exporter` container images are signed by [Sigstore](https://www.sigstore.dev/) and may be verified:
+
+```bash
+cosign verify \
+--key=./cosign.pub \
+ghcr.io/dazwilkin/crtsh-exporter:1234567890123456789012345678901234567890
+```
+
+> **NOTE** `cosign.pub` may be downloaded [here](./cosign.pub)
+
+To install `cosign` e.g.:
+
+```bash
+go install github.com/sigstore/cosign/cmd/cosign@latest
+```
