@@ -37,8 +37,8 @@ var (
 	StartTime = time.Now().Unix()
 )
 var (
-	hostList    = flag.String("hosts", "", "Comma-separated list of hosts")
 	endpoint    = flag.String("endpoint", ":8080", "The endpoint of the Exporter HTTP server")
+	hostList    = flag.String("hosts", "", "Comma-separated list of hosts")
 	metricsPath = flag.String("path", "/metrics", "The path on which Prometheus metrics will be served")
 )
 var (
