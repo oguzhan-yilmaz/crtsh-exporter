@@ -1,3 +1,8 @@
 .vscode/
 
+.env.test
+
 cosign.key
+
+podman.sh
+

@@ -1,0 +1,3 @@
+groups:
+- name: crtsh_exporter
+  rules: []
