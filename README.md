@@ -1,5 +1,8 @@
 # Prometheus Exporter for [`crt.sh`](https://crt.sh)
 
+[![build](https://github.com/DazWilkin/crtsh-exporter/actions/workflows/build.yml/badge.svg)](https://github.com/DazWilkin/crtsh-exporter/actions/workflows/build.yml)
+
+
 + `ghcr.io/dazwilkin/crtsh-exporter:a51f90946e0c9b8dbef77e705b9271280efa958b`
 
 ## Example
@@ -56,3 +59,18 @@ To install `cosign` e.g.:
 ```bash
 go install github.com/sigstore/cosign/cmd/cosign@latest
 ```
+
+## Similar Exporters
+
++ [Prometheus Exporter for Azure](https://github.com/DazWilkin/azure-exporter)
++ [Prometheus Exporter for Fly.io](https://github.com/DazWilkin/fly-exporter)
++ [Prometheus Exporter for GCP](https://github.com/DazWilkin/gcp-exporter)
++ [Prometheus Exporter for GoatCounter](https://github.com/DazWilkin/goatcounter-exporter)
++ [Prometheus Exporter for Koyeb](https://github.com/DazWilkin/koyeb-exporter)
++ [Prometheus Exporter for Linode](https://github.com/DazWilkin/linode-exporter)
++ [Prometheus Exporter for Porkbun](https://github.com/DazWilkin/porkbun-exporter)
++ [Prometheus Exporter for Vultr](https://github.com/DazWilkin/vultr-exporter)
+
+<hr/>
+<br/>
+<a href="https://www.buymeacoffee.com/dazwilkin" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
