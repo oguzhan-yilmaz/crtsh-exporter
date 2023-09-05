@@ -13,9 +13,11 @@ import (
 )
 
 const (
-	baseURL string = "https://crt.sh"
+	baseURL          string = "https://crt.sh"
+	expiryDateLayout string = "2006-01-02T15:04:05.999" // Reference time
 )
 
+// Record is a type that represents a crt.sh result record
 type Record struct {
 	IssueCAID      int    `json:"issuer_ca_id"`
 	IssuerName     string `json:"issuer_name"`
@@ -28,30 +30,35 @@ type Record struct {
 	SerialNumber   string `json:"serial_number"`
 }
 
+// Time provides an alternative JSON unmarshaler for string-encoded dates
+// Dates are returned either as 2006-01-02T15:04:05.999 or without milliseconds
 type Time struct {
 	time.Time
 }
 
-const expiryDateLayout = "2006-01-02T15:04:05"
-
-func (ct *Time) UnmarshalJSON(b []byte) (err error) {
+// UnmarshalJSON is a method that converts a string-encoded date into a Time
+func (t *Time) UnmarshalJSON(b []byte) (err error) {
+	// []byte is escaped: \"2006-01-02T15:04:05.999\"
 	s := strings.Trim(string(b), "\"")
+
 	if s == "null" {
-		ct.Time = time.Time{}
-		return
+		t.Time = time.Time{}
+		return err
 	}
-	ct.Time, err = time.Parse(expiryDateLayout, s)
-	return
+
+	t.Time, err = time.Parse(expiryDateLayout, s)
+
+	return err
 }
 
-// HostsCollector collects metrics
+// HostsCollector is a type that represents a collector of host records
 type HostsCollector struct {
 	client *http.Client
 	hosts  []string
 	log    *slog.Logger
 
 	// Metrics
-	Certificate *prometheus.Desc
+	CertificateRecords *prometheus.Desc
 }
 
 // NewHostsCollector is a function that returns a new HostCollector
@@ -63,9 +70,9 @@ func NewHostsCollector(hosts []string, log *slog.Logger) *HostsCollector {
 		hosts:  hosts,
 		log:    log,
 
-		Certificate: prometheus.NewDesc(
-			BuildFQName("certificate", log),
-			"Certificate count",
+		CertificateRecords: prometheus.NewDesc(
+			BuildFQName("certificate_records", log),
+			"Number of Certificate records, labeled by most recent record's metadata",
 			[]string{
 				"name",
 				"not_before",
@@ -138,7 +145,7 @@ func (c *HostsCollector) Collect(ch chan<- prometheus.Metric) {
 			"record", record,
 		)
 		ch <- prometheus.MustNewConstMetric(
-			c.Certificate,
+			c.CertificateRecords,
 			prometheus.GaugeValue,
 			float64(len(records)),
 			[]string{
@@ -153,5 +160,5 @@ func (c *HostsCollector) Collect(ch chan<- prometheus.Metric) {
 
 // Describe implements Prometheus' Collector interface and is used to describe metrics
 func (c *HostsCollector) Describe(ch chan<- *prometheus.Desc) {
-	ch <- c.Certificate
+	ch <- c.CertificateRecords
 }
