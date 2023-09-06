@@ -1,6 +1,13 @@
 groups:
 - name: crtsh_exporter
   rules:
+  - alert: certificate_expiry_within_30_days
+    expr: sum without(instance,job,serial_numer) (crtsh_exporter_certificate_expiry{}) < time()+30*86400
+    for: 1h
+    labels:
+      severity: page
+    annotations:
+      summary: Certificate ({{ $labels.name }}) expires within 30 days (at {{ $value }} UNIX epoch)
   - alert: certificate_expiry_within_7_days
     expr: sum without(instance,job,serial_numer) (crtsh_exporter_certificate_expiry{}) < time()+7*86400
     for: 1h
