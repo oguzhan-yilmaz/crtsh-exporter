@@ -100,6 +100,7 @@ func (c *HostsCollector) Collect(ch chan<- prometheus.Metric) {
 
 	for _, host := range c.hosts {
 		log := log.With("host", host)
+		log.Info("Creating HTTP request")
 		rqst, err := http.NewRequest(http.MethodGet, baseURL, nil)
 		if err != nil {
 			msg := "unable to create request"
@@ -107,11 +108,15 @@ func (c *HostsCollector) Collect(ch chan<- prometheus.Metric) {
 			continue
 		}
 
+		log.Info("Building URL query string")
 		q := rqst.URL.Query()
 		q.Add("q", host)
+		q.Add("exclude", "expired")
+		q.Add("deduplicate", "Y")
 		q.Add("output", "json")
 		rqst.URL.RawQuery = q.Encode()
 
+		log.Info("Executing HTTP request")
 		resp, err := c.client.Do(rqst)
 		if err != nil {
 			msg := "unable to execute request"
@@ -120,6 +125,7 @@ func (c *HostsCollector) Collect(ch chan<- prometheus.Metric) {
 		}
 		defer resp.Body.Close()
 
+		log.Info("Reading HTTP response")
 		b, err := io.ReadAll(resp.Body)
 		if err != nil {
 			msg := "unable to read response body"

@@ -38,7 +38,8 @@ var (
 )
 var (
 	endpoint    = flag.String("endpoint", ":8080", "The endpoint of the Exporter HTTP server")
-	hostList    = flag.String("hosts", "", "Comma-separated list of hosts")
+	domain      = flag.String("domain", "", "The domain name to be queried")
+	hostList    = flag.String("hosts", "", "Comma-separated list of hosts to be queried")
 	metricsPath = flag.String("path", "/metrics", "The path on which Prometheus metrics will be served")
 )
 var (
@@ -68,17 +69,24 @@ func main() {
 		logger.Info("OSVersion value unchanged: expected to be set during build")
 	}
 
-	flag.Parse()
-
-	if *hostList == "" {
-		logger.Info("Expect '--hosts' to contain at least one host")
-	}
-
-	hosts := strings.Split(*hostList, ",")
-
 	registry := prometheus.NewRegistry()
 	registry.MustRegister(collector.NewExporterCollector(OSVersion, GoVersion, GitCommit, StartTime))
-	registry.MustRegister(collector.NewHostsCollector(hosts, logger))
+
+	flag.Parse()
+
+	if *hostList != "" {
+		if hosts := strings.Split(*hostList, ","); len(hosts) > 0 {
+			logger.Info("Flag --hosts set and contains hosts, registering Hosts collector",
+				"hosts", hosts,
+			)
+			registry.MustRegister(collector.NewHostsCollector(hosts, logger))
+		}
+	}
+
+	if *domain != "" {
+		logger.Info("Flag --domain set and contains domain, registering Domain collector")
+		registry.MustRegister(collector.NewDomainCollector(*domain, logger))
+	}
 
 	mux := http.NewServeMux()
 	mux.Handle("/", http.HandlerFunc(handleRoot))
@@ -91,5 +99,5 @@ func main() {
 	logger.Info("metrics path",
 		"path", *metricsPath,
 	)
-	logger.Error("Server failed", http.ListenAndServe(*endpoint, mux))
+	logger.Error("Server failed", "err", http.ListenAndServe(*endpoint, mux))
 }
