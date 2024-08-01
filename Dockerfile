@@ -1,4 +1,4 @@
-ARG GOLANG_VERSION=1.21.0
+ARG GOLANG_VERSION=1.22.0
 
 ARG GOOS=linux
 ARG GOARCH=amd64
@@ -27,7 +27,7 @@ RUN CGO_ENABLED=0 GOOS=${GOOS} GOARCH=${GOARCH} \
     -o /go/bin/exporter \
     ./main.go
 
-FROM gcr.io/distroless/static-debian11:latest
+FROM gcr.io/distroless/static-debian12:latest
 
 LABEL org.opencontainers.image.description "Prometheus Exporter for crt.sh"
 LABEL org.opencontainers.image.source https://github.com/DazWilkin/crtsh-exporter
