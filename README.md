@@ -4,7 +4,7 @@
 [![Go Reference](https://pkg.go.dev/badge/github.com/DazWilkin/crtsh-exporter.svg)](https://pkg.go.dev/github.com/DazWilkin/crtsh-exporter)
 [![Go Report Card](https://goreportcard.com/badge/github.com/DazWilkin/crtsh-exporter)](https://goreportcard.com/report/github.com/DazWilkin/crtsh-exporter)
 
-+ `ghcr.io/dazwilkin/crtsh-exporter:16eb581aab83039f6081083dfa79dad80ba1881d`
++ `ghcr.io/dazwilkin/crtsh-exporter:ccab3620273cfecd73e8905db1e7cb8c40a312a1`
 
 ## Example
 
@@ -47,7 +47,7 @@ podman run \
 --interactive --tty --rm \
 --name=crtsh-exporter \
 --publish=${HOST_PORT}:${CONT_PORT}/tcp \
-ghcr.io/dazwilkin/crtsh-exporter:16eb581aab83039f6081083dfa79dad80ba1881d \
+ghcr.io/dazwilkin/crtsh-exporter:ccab3620273cfecd73e8905db1e7cb8c40a312a1 \
 --hosts=${HOSTS} \
 --endpoint=:${CONT_PORT} \
 --path=/metrics
@@ -85,7 +85,7 @@ quay.io/prometheus/prometheus:${VERS} \
 ```bash
 cosign verify \
 --key=./cosign.pub \
-ghcr.io/dazwilkin/crtsh-exporter:16eb581aab83039f6081083dfa79dad80ba1881d
+ghcr.io/dazwilkin/crtsh-exporter:ccab3620273cfecd73e8905db1e7cb8c40a312a1
 ```
 
 > **NOTE** `cosign.pub` may be downloaded [here](./cosign.pub)
