@@ -113,7 +113,7 @@ jobs:
           do
             sed \
             --in-place \
-            "s|ghcr.io/${{ env.REPO }}:[0-9a-f]\{40\}|ghcr.io/${{ env.REPO }}:${{ github.sha }}|g" \
+            "s|${{ env.REGISTRY }}/${{ env.REPO }}:[0-9a-f]\{7\}|${{ env.REGISTRY }}/${{ env.REPO }}:${{ env.SHA_SHORT }}|g" \
             ${FILENAME}
             git add ${FILENAME}
           done
