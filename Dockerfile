@@ -1,12 +1,13 @@
 ARG GOLANG_VERSION=1.22.0
 
-ARG GOOS=linux
-ARG GOARCH=amd64
+# TARGETOS and TARGETARCH will be populated at 'docker build'
+ARG TARGETOS  
+ARG TARGETARCH
 
 ARG COMMIT
 ARG VERSION
 
-FROM docker.io/golang:${GOLANG_VERSION} as build
+FROM docker.io/golang:${GOLANG_VERSION} AS build
 
 WORKDIR /crtsh-exporter
 
@@ -14,13 +15,14 @@ COPY go.* ./
 COPY main.go .
 COPY collector ./collector
 
-ARG GOOS
-ARG GOARCH
-
+# TARGETOS and TARGETARCH will be populated at 'docker build'
+ARG TARGETOS  
+ARG TARGETARCH
+ 
 ARG VERSION
 ARG COMMIT
 
-RUN CGO_ENABLED=0 GOOS=${GOOS} GOARCH=${GOARCH} \
+RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} \
     go build \
     -ldflags "-X main.OSVersion=${VERSION} -X main.GitCommit=${COMMIT}" \
     -a -installsuffix cgo \
@@ -29,8 +31,8 @@ RUN CGO_ENABLED=0 GOOS=${GOOS} GOARCH=${GOARCH} \
 
 FROM gcr.io/distroless/static-debian12:latest
 
-LABEL org.opencontainers.image.description "Prometheus Exporter for crt.sh"
-LABEL org.opencontainers.image.source https://github.com/DazWilkin/crtsh-exporter
+LABEL org.opencontainers.image.description="Prometheus Exporter for crt.sh"
+LABEL org.opencontainers.image.source=https://github.com/DazWilkin/crtsh-exporter
 
 COPY --from=build /go/bin/exporter /
 
