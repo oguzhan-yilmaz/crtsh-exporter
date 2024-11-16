@@ -41,6 +41,7 @@ jobs:
           password: ${{ secrets.GHCR }}
           
       - name: Buildx linux/amd64 Docker Image
+        id: docker-build-push-amd64
         uses: docker/build-push-action@v3
         with:
           context: .
@@ -52,6 +53,7 @@ jobs:
           tags: ${{ env.REGISTRY }}/${{ env.REPO }}:${{ env.SHA_SHORT }},${{ env.REGISTRY }}/${{ env.REPO }}:latest
 
       - name: Buildx linux/arm64 Docker Image
+        id: docker-build-push-arm64
         uses: docker/build-push-action@v3
         with:
           context: .
@@ -63,6 +65,7 @@ jobs:
           tags: ${{ env.REGISTRY }}/${{ env.REPO }}:${{ env.SHA_SHORT }},${{ env.REGISTRY }}/${{ env.REPO }}:latest
 
       - name: Buildx linux/arm64/v8 Docker Image
+        id: docker-build-push-arm64-v8
         uses: docker/build-push-action@v3
         with:
           context: .
@@ -81,14 +84,22 @@ jobs:
         run: echo "${{ secrets.SIGNING }}" > ./cosign.key
       - name: Sign container image
         run: |
-          cosign sign \
-          --yes \
-          --key=./cosign.key \
-          --annotations="repo=${{ github.repository }}" \
-          --annotations="workflow=${{ github.workflow }}" \
-          --annotations="commit=${{ github.sha }}" \
-          --annotations="version=${{ env.VERSION }}" \
-          ghcr.io/${{ env.REPO }}@${{ steps.docker-build-push.outputs.digest }}
+          HASHES=(
+            {{ steps.docker-build-push-amd64 }}
+            {{ steps.docker-build-push-arm64 }}
+            {{ steps.docker-build-push-arm64-v8 }}
+          )
+          for HASH in "${HASHES[@]}"
+          do
+            cosign sign \
+            --yes \
+            --key=./cosign.key \
+            --annotations="repo=${{ github.repository }}" \
+            --annotations="workflow=${{ github.workflow }}" \
+            --annotations="commit=${{ github.sha }}" \
+            --annotations="version=${{ env.VERSION }}" \
+            ${{ env.REGISTRY }}/${{ env.REPO }}@${HASH}
+          done
         env:
           COSIGN_PASSWORD: ""
       
