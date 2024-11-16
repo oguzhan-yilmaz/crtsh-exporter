@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       REGISTRY: "ghcr.io" 
-      REPO: "${{ github.repository_owner }}/crtsh-exporter" 
+      REPO: "dazwilkin/crtsh-exporter" 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
