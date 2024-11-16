@@ -47,7 +47,7 @@ jobs:
           platforms: linux/amd64
           build-args: |
             VERSION=${{ env.SHA_SHORT }}
-            COMMIT=${{ env.REPO }}
+            COMMIT=${{ github.sha }}
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.REPO }}:${{ env.SHA_SHORT }},${{ env.REGISTRY }}/${{ env.REPO }}:latest
 
@@ -58,7 +58,7 @@ jobs:
           platforms: linux/arm64
           build-args: |
             VERSION=${{ env.VERSION }}
-            COMMIT=${{ env.SHA_SHORT }}
+            COMMIT=${{ github.sha }}
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.REPO }}:${{ env.SHA_SHORT }},${{ env.REGISTRY }}/${{ env.REPO }}:latest
 
