@@ -2,8 +2,14 @@ name: crtsh-exporter-multi-platform-docker-build
 
 on:
   push:
+    # tags:
+    #   - "v*.*.*" 
     branches:
       - master
+
+  schedule:
+    # This will run at 11:00 PM UTC every Monday.
+    - cron: '0 23 * * 1'
 jobs:
   crtsh-exporter-multi-platform-docker-build:
     name: crtsh-exporter
