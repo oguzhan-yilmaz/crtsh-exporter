@@ -84,7 +84,6 @@ jobs:
         run: echo "${{ secrets.SIGNING }}" > ./cosign.key
       - name: Sign container image
         run: |
-          # Must be the digest property of the step's output value
           DIGESTS=(
             ${{ steps.docker-build-push-amd64.digest }}
             ${{ steps.docker-build-push-arm64.digest }}
