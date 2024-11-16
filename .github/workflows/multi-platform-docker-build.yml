@@ -85,9 +85,9 @@ jobs:
       - name: Sign container image
         run: |
           HASHES=(
-            {{ steps.docker-build-push-amd64 }}
-            {{ steps.docker-build-push-arm64 }}
-            {{ steps.docker-build-push-arm64-v8 }}
+            ${{ steps.docker-build-push-amd64 }}
+            ${{ steps.docker-build-push-arm64 }}
+            ${{ steps.docker-build-push-arm64-v8 }}
           )
           for HASH in "${HASHES[@]}"
           do
