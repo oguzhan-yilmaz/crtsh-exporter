@@ -149,37 +149,40 @@ func (c *HostsCollector) Collect(ch chan<- prometheus.Metric) {
 			"number", len(records),
 		)
 		if len(records) == 0 {
-			msg := "expected at least one record in response"
+			msg := "no records found in response"
 			log.Info(msg)
 			continue
 		}
 
-		// Grab most recent entry
-		record := records[0]
+		// Process all records
+		for _, record := range records {
+			log.Info("Processing record",
+				"record", record,
+			)
 
-		log.Info("Most recent record",
-			"record", record,
-		)
-		ch <- prometheus.MustNewConstMetric(
-			c.CertificateRecords,
-			prometheus.GaugeValue,
-			float64(len(records)),
-			[]string{
-				record.NameValue,
-				strconv.FormatInt(record.NotBefore.Unix(), 10),
-				strconv.FormatInt(record.NotAfter.Unix(), 10),
-				record.SerialNumber,
-			}...,
-		)
-		ch <- prometheus.MustNewConstMetric(
-			c.CertificateExpiry,
-			prometheus.GaugeValue,
-			float64(record.NotAfter.Unix()),
-			[]string{
-				record.NameValue,
-				record.SerialNumber,
-			}...,
-		)
+			// Create metric for each record
+			ch <- prometheus.MustNewConstMetric(
+				c.CertificateRecords,
+				prometheus.GaugeValue,
+				1.0, // Changed to 1.0 since we're counting individual records
+				[]string{
+					record.NameValue,
+					strconv.FormatInt(record.NotBefore.Unix(), 10),
+					strconv.FormatInt(record.NotAfter.Unix(), 10),
+					record.SerialNumber,
+				}...,
+			)
+
+			ch <- prometheus.MustNewConstMetric(
+				c.CertificateExpiry,
+				prometheus.GaugeValue,
+				float64(record.NotAfter.Unix()),
+				[]string{
+					record.NameValue,
+					record.SerialNumber,
+				}...,
+			)
+		}
 	}
 }
 
