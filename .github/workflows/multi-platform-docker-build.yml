@@ -40,7 +40,7 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GHCR }}
           
-      - name: Buildx linux/amd64 Docker Image
+      - name: Buildx Multi Platform Linux Docker Images
         id: docker-build-push-multi-platform
         uses: docker/build-push-action@v3
         with:
@@ -54,44 +54,44 @@ jobs:
 
       - run: | 
           ${{ steps.docker-build-push-multi-platform.digest }}
-      # - name: Install Cosign
-      #   uses: sigstore/cosign-installer@main
-      # - name: Write signing key to disk (only needed for `cosign sign --key`)
-      #   run: echo "${{ secrets.SIGNING }}" > ./cosign.key
-      # - name: Sign container image
-      #   run: |
-      #     DIGESTS=(
-      #       ${{ steps.docker-build-push-amd64.digest }}
-      #       ${{ steps.docker-build-push-arm64.digest }}
-      #       ${{ steps.docker-build-push-arm64-v8.digest }}
-      #     )
-      #     for DIGEST in "${DIGESTS[@]}"
-      #     do
-      #       cosign sign \
-      #       --yes \
-      #       --key=./cosign.key \
-      #       --annotations="repo=${{ github.repository }}" \
-      #       --annotations="workflow=${{ github.workflow }}" \
-      #       --annotations="commit=${{ github.sha }}" \
-      #       --annotations="version=${{ env.VERSION }}" \
-      #       ${{ env.REGISTRY }}/${{ env.REPO }}@${DIGEST}
-      #     done
-      #   env:
-      #     COSIGN_PASSWORD: ""
-      
-      # - name: revise occurrences of the image
-      #   run: |
-      #     git config --local user.email "action@github.com"
-      #     git config --local user.name "GitHub Actions"
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@main
+      - name: Write signing key to disk (only needed for `cosign sign --key`)
+        run: echo "${{ secrets.SIGNING }}" > ./cosign.key
+      - name: Sign container image
+        run: |
+          DIGESTS=(
+            ${{ steps.docker-build-push-multi-platform.digest }}
+          )
+          for DIGEST in "${DIGESTS[@]}"
+          do
+            cosign sign \
+            --yes \
+            --key=./cosign.key \
+            --annotations="repo=${{ github.repository }}" \
+            --annotations="workflow=${{ github.workflow }}" \
+            --annotations="commit=${{ github.sha }}" \
+            --annotations="version=${{ env.VERSION }}" \
+            ${{ env.REGISTRY }}/${{ env.REPO }}@${DIGEST}
+          done
+        env:
+          COSIGN_PASSWORD: ""
+        continue-on-error: true
 
-      #     for FILENAME in "./README.md"
-      #     do
-      #       sed \
-      #       --in-place \
-      #       "s|${{ env.REGISTRY }}/${{ env.REPO }}:[0-9a-f]\{7\}|${{ env.REGISTRY }}/${{ env.REPO }}:${{ env.SHA_SHORT }}|g" \
-      #       ${FILENAME}
-      #       git add ${FILENAME}
-      #     done
+      - name: revise occurrences of the image
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Actions"
 
-      #     git commit --message "GitHub Actions update image references"
-      #     git push origin master
+          for FILENAME in "./README.md"
+          do
+            sed \
+            --in-place \
+            "s|${{ env.REGISTRY }}/${{ env.REPO }}:[0-9a-f]\{7\}|${{ env.REGISTRY }}/${{ env.REPO }}:${{ env.SHA_SHORT }}|g" \
+            ${FILENAME}
+            git add ${FILENAME}
+          done
+
+          git commit --message "GitHub Actions update image references"
+          git push origin master
+        continue-on-error: true
