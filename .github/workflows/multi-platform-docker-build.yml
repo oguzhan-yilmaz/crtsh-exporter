@@ -45,33 +45,9 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          platforms: linux/amd64
+          platforms: linux/amd64,linux/arm64/v8,linux/arm64
           build-args: |
             VERSION=${{ env.SHA_SHORT }}
-            COMMIT=${{ github.sha }}
-          push: true
-          tags: ${{ env.REGISTRY }}/${{ env.REPO }}:${{ env.SHA_SHORT }},${{ env.REGISTRY }}/${{ env.REPO }}:latest
-
-      - name: Buildx linux/arm64 Docker Image
-        id: docker-build-push-arm64
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          platforms: linux/arm64
-          build-args: |
-            VERSION=${{ env.VERSION }}
-            COMMIT=${{ github.sha }}
-          push: true
-          tags: ${{ env.REGISTRY }}/${{ env.REPO }}:${{ env.SHA_SHORT }},${{ env.REGISTRY }}/${{ env.REPO }}:latest
-
-      - name: Buildx linux/arm64/v8 Docker Image
-        id: docker-build-push-arm64-v8
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          platforms: linux/arm64/v8
-          build-args: |
-            VERSION=${{ env.VERSION }}
             COMMIT=${{ github.sha }}
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.REPO }}:${{ env.SHA_SHORT }},${{ env.REGISTRY }}/${{ env.REPO }}:latest
