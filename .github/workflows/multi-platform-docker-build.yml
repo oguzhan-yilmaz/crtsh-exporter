@@ -5,7 +5,7 @@ on:
     # tags:
     #   - "v*.*.*" 
     branches:
-      - debug-multiplatform-image-tags
+      - debug-multi-platform-image-tags
 
   schedule:
     # This will run at 11:00 PM UTC every Monday.
