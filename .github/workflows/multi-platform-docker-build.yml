@@ -41,7 +41,7 @@ jobs:
           password: ${{ secrets.GHCR }}
           
       - name: Buildx linux/amd64 Docker Image
-        id: docker-build-push-amd64
+        id: docker-build-push-multi-platform
         uses: docker/build-push-action@v3
         with:
           context: .
@@ -52,7 +52,8 @@ jobs:
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.REPO }}:${{ env.SHA_SHORT }},${{ env.REGISTRY }}/${{ env.REPO }}:latest
 
-
+      - run: | 
+          ${{ steps.docker-build-push-multi-platform.digest }}
       # - name: Install Cosign
       #   uses: sigstore/cosign-installer@main
       # - name: Write signing key to disk (only needed for `cosign sign --key`)
