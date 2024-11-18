@@ -5,7 +5,7 @@ on:
     # tags:
     #   - "v*.*.*" 
     branches:
-      - master
+      - debug-multiplatform-image-tags
 
   schedule:
     # This will run at 11:00 PM UTC every Monday.
@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       REGISTRY: "ghcr.io" 
-      REPO: "dazwilkin/crtsh-exporter" 
+      REPO: "oguzhan-yilmaz/crtsh-exporter" 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
